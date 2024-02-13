@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductCatalog.Application.Interfaces;
+using ProductCatalog.Application.Mappings;
+using ProductCatalog.Application.Services;
 using ProductCatalog.Domain.Interfaces;
 using ProductCatalog.Infra.Data.Context;
 using ProductCatalog.Infra.Data.Repositories;
@@ -17,6 +20,10 @@ namespace ProductCatalog.Infra.IoC.Configurations
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
             return services;
         }
