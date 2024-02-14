@@ -7,15 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{60DE2924-A4B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FBBD887A-E305-4E69-BF5D-23F1931526CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Domain", "src\ProductCatalog.Domain\ProductCatalog.Domain.csproj", "{E40DD3A4-89B2-4893-B58D-5C4384AC9F7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Domain", "src\ProductCatalog.Domain\ProductCatalog.Domain.csproj", "{E40DD3A4-89B2-4893-B58D-5C4384AC9F7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Infra.Data", "src\ProductCatalog.Infra.Data\ProductCatalog.Infra.Data.csproj", "{E64295D0-79B8-4948-B9C4-232C12AB4C3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Infra.Data", "src\ProductCatalog.Infra.Data\ProductCatalog.Infra.Data.csproj", "{E64295D0-79B8-4948-B9C4-232C12AB4C3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Infra.IoC", "src\ProductCatalog.Infra.IoC\ProductCatalog.Infra.IoC.csproj", "{334ABB22-3A17-441D-9A47-66DB7980C4B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Infra.IoC", "src\ProductCatalog.Infra.IoC\ProductCatalog.Infra.IoC.csproj", "{334ABB22-3A17-441D-9A47-66DB7980C4B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Application", "src\ProductCatalog.Application\ProductCatalog.Application.csproj", "{5828B9AE-47DC-440C-9978-8B32FCCC1D1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Application", "src\ProductCatalog.Application\ProductCatalog.Application.csproj", "{5828B9AE-47DC-440C-9978-8B32FCCC1D1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.WebAPI", "src\ProductCatalog.WebAPI\ProductCatalog.WebAPI.csproj", "{E91FB0BC-04A0-49D9-BA4E-4A19102077D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.WebAPI", "src\ProductCatalog.WebAPI\ProductCatalog.WebAPI.csproj", "{E91FB0BC-04A0-49D9-BA4E-4A19102077D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
