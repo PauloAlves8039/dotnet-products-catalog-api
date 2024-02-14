@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.Application.DTOs;
 using ProductCatalog.Application.Interfaces;
 
 namespace ProductCatalog.WebAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -55,6 +57,7 @@ namespace ProductCatalog.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "DeletePermission")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             await _categoryService.Remove(id);
