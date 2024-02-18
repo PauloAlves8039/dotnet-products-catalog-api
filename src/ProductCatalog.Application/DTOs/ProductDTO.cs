@@ -6,6 +6,7 @@ namespace ProductCatalog.Application.DTOs
 {
     public class ProductDTO
     {
+        [Range(0, int.MaxValue, ErrorMessage = "Invalid Id value")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "The Name is Required")]
