@@ -60,6 +60,13 @@ namespace ProductCatalog.WebAPI.Controllers
         [Authorize(Policy = "DeletePermission")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
+            var existingCategoryDto = await _categoryService.GetById(id);
+
+            if (existingCategoryDto == null)
+            {
+                return NotFound();
+            }
+
             await _categoryService.Remove(id);
             return NoContent();
         }
