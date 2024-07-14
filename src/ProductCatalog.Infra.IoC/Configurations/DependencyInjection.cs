@@ -23,6 +23,7 @@ namespace ProductCatalog.Infra.IoC.Configurations
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
             return services;
