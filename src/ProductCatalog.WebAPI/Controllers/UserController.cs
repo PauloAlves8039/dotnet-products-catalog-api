@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ProductCatalog.Application.DTOs.Account;
+using ProductCatalog.Application.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,20 +15,26 @@ namespace ProductCatalog.WebAPI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IConfiguration _configuration;
+        // private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
 
-        public UserController(UserManager<IdentityUser> userManager,
-                              SignInManager<IdentityUser> signInManager,
-                              IConfiguration configuration)
+        public UserController(UserManager<IdentityUser> userManager, 
+                              SignInManager<IdentityUser> signInManager, 
+                              ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterUSer([FromBody] UserDTO userDTO)
+        public async Task<ActionResult> RegisterUser([FromBody] UserDTO userDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var user = new IdentityUser
             {
                 UserName = userDTO.Email,
@@ -42,67 +49,96 @@ namespace ProductCatalog.WebAPI.Controllers
                 return BadRequest(result.Errors);
             }
 
-            await _signInManager.SignInAsync(user, false);
-            return Ok(GerarToken(userDTO));
+            return Ok(new { Message = "User registered successfully." });
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] UserDTO userDTO)
+        public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
+                return BadRequest(ModelState);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(userDTO.Email,
-                userDTO.Password, isPersistent: false, lockoutOnFailure: false);
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return BadRequest(ModelState);
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
-                return Ok(GerarToken(userDTO));
+                UserToken token = _tokenService.GenerateToken(loginDTO.Email);
+                return Ok(token);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid login....");
+                ModelState.AddModelError(string.Empty, "Invalid Login");
                 return BadRequest(ModelState);
             }
         }
 
-        private UserToken GerarToken(UserDTO userDTO)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userDTO.Email),
-                new Claim("meuPC", "teclado"),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+        //[HttpPost("login")]
+        //public async Task<ActionResult> Login([FromBody] UserDTO userDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
+        //    }
 
-            if (userDTO.Email == "admin@localhost")
-            {
-                claims.Add(new Claim("DeletePermission", "true"));
-            }
+        //    var result = await _signInManager.PasswordSignInAsync(userDTO.Email,
+        //        userDTO.Password, isPersistent: false, lockoutOnFailure: false);
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
-            var credenciais = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //    if (result.Succeeded)
+        //    {
+        //        return Ok(GerarToken(userDTO));
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Invalid login....");
+        //        return BadRequest(ModelState);
+        //    }
+        //}
 
-            var tokenExpiration = _configuration["TokenConfiguration:ExpireHours"];
-            var expiration = DateTime.UtcNow.AddHours(double.Parse(tokenExpiration));
+        //private UserToken GerarToken(UserDTO userDTO)
+        //{
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(JwtRegisteredClaimNames.UniqueName, userDTO.Email),
+        //        new Claim("meuPC", "teclado"),
+        //        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        //    };
 
-            JwtSecurityToken token = new JwtSecurityToken(
-              issuer: _configuration["TokenConfiguration:Issuer"],
-              audience: _configuration["TokenConfiguration:Audience"],
-              claims: claims,
-              expires: expiration,
-              signingCredentials: credenciais);
+        //    if (userDTO.Email == "admin@localhost")
+        //    {
+        //        claims.Add(new Claim("DeletePermission", "true"));
+        //    }
 
-            return new UserToken()
-            {
-                Authenticated = true,
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiration = expiration,
-                Message = "Token JWT OK"
-            };
-        }
+        //    var key = new SymmetricSecurityKey(
+        //        Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
+        //    var credenciais = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        //    var tokenExpiration = _configuration["TokenConfiguration:ExpireHours"];
+        //    var expiration = DateTime.UtcNow.AddHours(double.Parse(tokenExpiration));
+
+        //    JwtSecurityToken token = new JwtSecurityToken(
+        //      issuer: _configuration["TokenConfiguration:Issuer"],
+        //      audience: _configuration["TokenConfiguration:Audience"],
+        //      claims: claims,
+        //      expires: expiration,
+        //      signingCredentials: credenciais);
+
+        //    return new UserToken()
+        //    {
+        //        Authenticated = true,
+        //        Token = new JwtSecurityTokenHandler().WriteToken(token),
+        //        Expiration = expiration,
+        //        Message = "Token JWT OK"
+        //    };
+        //}
     }
 }
