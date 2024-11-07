@@ -42,7 +42,7 @@ Funcionalidades implementadas `catálogo` e `produto` nessa aplicação:
 
 - Adicionei o uso de containers com o `Docker`.
 - Fiz a implementação de alguns testes de unidade com o `XUnit` e recursos auxiliares como o `FluentAssertions` e `Moq`.
-- Procurei manter uma estrutura mais objetivo próxima da `Clean Architecture`.
+- Procurei manter uma estrutura mais objetiva e próxima dos conceitos da `Clean Architecture`.
 
 ## :wrench: Utilização do Projeto
 
